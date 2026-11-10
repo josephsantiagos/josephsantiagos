@@ -1,6 +1,6 @@
 <h1 align="center">Joseph Santiago</h1>
 <p align="center">
-  <b>Desenvolvedor Full-Stack &amp; Mobile · I.A. aplicada · Automação · Dashboards</b><br>
+  <b>Desenvolvedor Full-Stack &amp; Mobile · I.A. aplicada (agentes, RAG) · Arquitetura de sistemas · Automação · Dashboards</b><br>
   Crio de ponta a ponta: o app, a I.A. que atende o cliente, a API, o painel que mostra os números e o servidor onde tudo roda.
 </p>
 
@@ -34,10 +34,19 @@
 ## 🧠 Inteligência Artificial
 
 - Agentes conversacionais com LLMs (Claude, GPT e modelos locais via **Ollama**), com ferramentas, memória e regras de negócio
+- **RAG (Retrieval-Augmented Generation):** base de conhecimento com busca semântica. Os documentos viram trechos com embeddings (OpenAI `text-embedding-3`), guardados no **banco vetorial pgvector** (PostgreSQL, índice HNSW). A busca usa limiar de similaridade e top-K, a resposta cita a fonte, e cada cliente só enxerga o próprio acervo (isolamento feito dentro do banco).
+- **Gateway de LLMs próprio** (FastAPI) que roteia entre modelos locais (Ollama / llama.cpp) e de nuvem (OpenRouter)
 - **LLM como juiz**: um robô que avalia as respostas dos outros agentes em produção
 - Transcrição de voz local (**Whisper**), geração de voz (TTS) e vídeos tutoriais gerados automaticamente
 - Servidores **MCP**, automação de navegador (Chrome DevTools Protocol) e orquestração de vários agentes
 - GPU na nuvem (Colab T4) ligada a agentes internos
+
+## 🏗️ Arquitetura de sistemas
+
+- **Clean Architecture:** a regra de negócio fica num núcleo independente (domínio + casos de uso), e WhatsApp, ERPs, banco e LLMs entram como adaptadores. Um núcleo atende os 14 robôs de I.A., e outro atende as 25 mensagerias. Trocar um fornecedor não mexe na regra.
+- **Mensageria assíncrona com RabbitMQ:** produtores e consumidores desacoplados, fila por cliente, controle de vazão para respeitar o limite de cada API, reentrega sem envio duplicado (idempotência) e reprocessamento seguro.
+- **Multi-tenant:** vários clientes no mesmo sistema, com isolamento dos dados de cada organização no próprio PostgreSQL.
+- **Observabilidade:** monitor das filas e das I.As, alertas no painel e conferência entre o que o painel mostra e o que o log registra.
 
 ## 🛠️ Stack
 
@@ -66,6 +75,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 ![Oracle](https://img.shields.io/badge/Oracle_DB-F80000?logo=oracle&logoColor=white)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-4169E1?logo=postgresql&logoColor=white)
 ![Supabase](https://img.shields.io/badge/GoTrue_%2B_PostgREST-3FCF8E?logo=supabase&logoColor=white)
 ![ERPNext](https://img.shields.io/badge/ERPNext_%2F_Frappe-0089FF?logo=frappe&logoColor=white)
 
@@ -79,7 +90,10 @@
 **I.A.**
 ![Claude](https://img.shields.io/badge/Claude-D97757?logo=anthropic&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=white)
+![RAG](https://img.shields.io/badge/RAG-embeddings_%2B_busca_sem%C3%A2ntica-6E40C9)
 ![Ollama](https://img.shields.io/badge/Ollama-000000?logo=ollama&logoColor=white)
+![llama.cpp](https://img.shields.io/badge/llama.cpp-000000)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-6566F1?logo=openrouter&logoColor=white)
 ![Whisper](https://img.shields.io/badge/Whisper-74AA9C?logo=openai&logoColor=white)
 ![MCP](https://img.shields.io/badge/MCP-111111?logo=anthropic&logoColor=white)
 
@@ -102,7 +116,6 @@
 
 ## 🧩 Competências
 
-- **Arquitetura:** Clean Architecture, filas e mensageria (RabbitMQ), sistemas multi-cliente, idempotência e reprocessamento sem duplicar envio
 - **Produto ponta a ponta:** do requisito à publicação na loja, com QA, monitoramento e correção em produção
 - **Infraestrutura:** servidor Proxmox com ~20 VMs, ~100 containers Docker, proxy reverso, backups e observabilidade
 - **Segurança:** varredura de vulnerabilidades (OpenVAS/Greenbone, Trivy, Nuclei), avaliação NIST CSF, auditoria de servidores e endurecimento
